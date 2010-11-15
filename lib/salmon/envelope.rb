@@ -13,6 +13,7 @@
 #    limitations under the License.
 
 require "salmon/signature"
+require "base64"
 
 module Salmon
   class Envelope
@@ -22,6 +23,18 @@ module Salmon
 
     def data=(new_data)
       @data = new_data
+      @payload = Base64.decode64(@data.gsub('-', '+').gsub('_', '/'))
+    end
+
+    def payload
+      @payload ||= nil
+    end
+
+    def payload=(new_payload)
+      @payload = new_payload
+      @data = Base64.encode64(
+        @payload
+      ).gsub('+', '-').gsub('/', '_').gsub(/[\s=]/, '')
     end
 
     def data_type
