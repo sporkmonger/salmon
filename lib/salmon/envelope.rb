@@ -46,7 +46,7 @@ module Salmon
     end
 
     def encoding
-      @encoding ||= nil
+      @encoding ||= 'base64url'
     end
 
     def encoding=(new_encoding)
@@ -54,7 +54,7 @@ module Salmon
     end
 
     def algorithm
-      @algorithm ||= nil
+      @algorithm ||= 'RSA-SHA256'
     end
 
     def algorithm=(new_algorithm)

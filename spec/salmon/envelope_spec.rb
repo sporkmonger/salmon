@@ -107,4 +107,21 @@ describe Salmon::Envelope, 'with a JSON serialization' do
       "  <updated>2009-12-18T20:04:03Z</updated>\n" +
       "</entry>\n  "
   end
+
+  it 'should parse the data type correctly' do
+    @envelope.data_type.should == 'application/atom+xml'
+  end
+
+  it 'should parse the encoding correctly' do
+    @envelope.encoding.should == 'base64url'
+  end
+
+  it 'should parse the algorithm correctly' do
+    @envelope.algorithm.should == 'RSA-SHA256'
+  end
+
+  it 'should parse at least one signature' do
+    @envelope.signatures.should_not be_empty
+    @envelope.signatures.first.should be_kind_of(Salmon::Signature)
+  end
 end
