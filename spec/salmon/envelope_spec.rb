@@ -22,36 +22,17 @@ describe Salmon::Envelope, 'in its initial state' do
     @envelope = Salmon::Envelope.new
   end
 
+  # Ugly-looking test data carefully designed to cover as much of the
+  # base64url algorithm as possible.
+
   it 'should set the payload correctly' do
-    @envelope.payload =
-      "<?xml version='1.0' encoding='UTF-8'?>\n" +
-      "<entry xmlns='http://www.w3.org/2005/Atom'>\n" +
-      "  <id>tag:example.com,2009:cmt-0.44775718</id>  \n" +
-      "  <author><name>test@example.com</name>" +
-      "<uri>bob@example.com</uri></author>\n" +
-      "  <thr:in-reply-to xmlns:thr='" +
-      "http://purl.org/syndication/thread/1.0'\n" +
-      "      ref='tag:blogger.com,1999:blog-893591374313312737."+
-      "post-3861663258538857954'>tag:blogger.com,1999:" +
-      "blog-893591374313312737.post-3861663258538857954\n" +
-      "  </thr:in-reply-to>\n" +
-      "  <content>Salmon swim upstream!</content>\n" +
-      "  <title>Salmon swim upstream!</title>\n" +
-      "  <updated>2009-12-18T20:04:03Z</updated>\n" +
-      "</entry>\n    "
-    @envelope.data.should ==
-      "PD94bWwgdmVyc2lvbj0nMS4wJyBlbmNvZGluZz0nVVRGLTgnPz4KPGVudHJ5IHhtbG5z" +
-      "PSdodHRwOi8vd3d3LnczLm9yZy8yMDA1L0F0b20nPgogIDxpZD50YWc6ZXhhbXBsZS5j" +
-      "b20sMjAwOTpjbXQtMC40NDc3NTcxODwvaWQ-ICAKICA8YXV0aG9yPjxuYW1lPnRlc3RA" +
-      "ZXhhbXBsZS5jb208L25hbWU-PHVyaT5ib2JAZXhhbXBsZS5jb208L3VyaT48L2F1dGhv" +
-      "cj4KICA8dGhyOmluLXJlcGx5LXRvIHhtbG5zOnRocj0naHR0cDovL3B1cmwub3JnL3N5" +
-      "bmRpY2F0aW9uL3RocmVhZC8xLjAnCiAgICAgIHJlZj0ndGFnOmJsb2dnZXIuY29tLDE5" +
-      "OTk6YmxvZy04OTM1OTEzNzQzMTMzMTI3MzcucG9zdC0zODYxNjYzMjU4NTM4ODU3OTU0" +
-      "Jz50YWc6YmxvZ2dlci5jb20sMTk5OTpibG9nLTg5MzU5MTM3NDMxMzMxMjczNy5wb3N0" +
-      "LTM4NjE2NjMyNTg1Mzg4NTc5NTQKICA8L3Rocjppbi1yZXBseS10bz4KICA8Y29udGVu" +
-      "dD5TYWxtb24gc3dpbSB1cHN0cmVhbSE8L2NvbnRlbnQ-CiAgPHRpdGxlPlNhbG1vbiBz" +
-      "d2ltIHVwc3RyZWFtITwvdGl0bGU-CiAgPHVwZGF0ZWQ-MjAwOS0xMi0xOFQyMDowNDow" +
-      "M1o8L3VwZGF0ZWQ-CjwvZW50cnk-CiAgICA"
+    @envelope.payload = "2`?33>]"
+    @envelope.data.should == "MmA_MzM-XQ"
+  end
+
+  it 'should set the data correctly' do
+    @envelope.data = "MmA_MzM-XQ"
+    @envelope.payload.should == "2`?33>]"
   end
 end
 
@@ -105,7 +86,7 @@ describe Salmon::Envelope, 'with a JSON serialization' do
       "  <content>Salmon swim upstream!</content>\n" +
       "  <title>Salmon swim upstream!</title>\n" +
       "  <updated>2009-12-18T20:04:03Z</updated>\n" +
-      "</entry>\n  "
+      "</entry>\n    "
   end
 
   it 'should parse the data type correctly' do

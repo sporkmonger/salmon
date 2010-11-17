@@ -23,7 +23,9 @@ module Salmon
 
     def data=(new_data)
       @data = new_data
-      @payload = Base64.decode64(@data.gsub('-', '+').gsub('_', '/'))
+      @payload = Base64.decode64(@data.gsub('-', '+').gsub('_', '/').ljust(
+        @data.size + (@data.size % 4), '='
+      ))
     end
 
     def payload
