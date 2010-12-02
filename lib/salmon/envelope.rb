@@ -12,8 +12,8 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
-require "salmon/signature"
-require "base64"
+require 'salmon'
+require 'salmon/signature'
 
 module Salmon
   class Envelope
@@ -23,9 +23,7 @@ module Salmon
 
     def data=(new_data)
       @data = new_data
-      @payload = Base64.decode64(@data.gsub('-', '+').gsub('_', '/').ljust(
-        @data.size + (@data.size % 4), '='
-      ))
+      @payload = Salmon.base64url_decode(new_data)
     end
 
     def payload
@@ -34,9 +32,7 @@ module Salmon
 
     def payload=(new_payload)
       @payload = new_payload
-      @data = Base64.encode64(
-        @payload
-      ).gsub('+', '-').gsub('/', '_').gsub(/[\s=]/, '')
+      @data = Salmon.base64url_encode(new_payload)
     end
 
     def data_type
@@ -65,6 +61,21 @@ module Salmon
 
     def signatures
       @signatures ||= []
+    end
+
+    def message_string
+      # Note: This message string will not be compatible with earlier
+      # implementations of Salmon that did not strip padding.
+      return [
+        self.data,
+        Salmon.base64url_encode(self.data_type),
+        Salmon.base64url_encode(self.encoding),
+        Salmon.base64url_encode(self.algorithm)
+      ].join('.')
+    end
+
+    def sign!(key)
+      # TODO
     end
 
     def parse_json(data)
