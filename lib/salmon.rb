@@ -27,7 +27,7 @@ module Salmon
 
   def self.base64url_decode(data)
     s = data.size
-    return (data.tr('-_', '+/').ljust(s - s % 4 + 4, '=')).unpack('m0').first
+    return (data.tr('-_', '+/').ljust(4 + 4 * (s / 4), '=')).unpack('m0').first
   end
 
   def self.base64url_to_i(data)
@@ -37,9 +37,8 @@ module Salmon
   def self.i_to_base64url(integer)
     # Can this be done more efficiently?
     hex_string = integer.to_s(16)
-    s = hex_string.size
     return self.base64url_encode([
-      hex_string.rjust(s - s % 2 + 2, '0')
+      hex_string.rjust(2 + 2 * (hex_string.size / 2), '0')
     ].pack('H*'))
   end
 

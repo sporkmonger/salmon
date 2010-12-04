@@ -15,7 +15,7 @@ module Salmon
     def to_s
       return (
         "RSA.#{Salmon.i_to_base64url(modulus)}." +
-        "#{Salmon.i_to_base64url(modulus)}"
+        "#{Salmon.i_to_base64url(exponent)}"
       )
     end
 

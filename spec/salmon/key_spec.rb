@@ -19,8 +19,8 @@ require 'salmon/key'
 describe Salmon::Key do
   it 'should parse application/magic-key correctly' do
     key = Salmon::Key.parse_magic_key(
-      'RSA.mVgY8RN6URBTstndvmUUPb4UZTdwvwmddSKE5z_' +
-      'jvKUEK6yk1u3rrC9yN8k6FilGj9K0eeUPe2hf4Pj-5CmHww.AQAB'
+      'RSA.AJlYGPETelEQU7LZ3b5lFD2-FGU3cL8JnXUihOc_47' +
+      'ylBCuspNbt66wvcjfJOhYpRo_StHnlD3toX-D4_uQph8M.AQAB'
     )
     key.modulus.should == (
       '803128378907519656502289154656359136834494406215410' +
@@ -28,5 +28,19 @@ describe Salmon::Key do
       '4493461257620351548796452092307094036643522661681091'
     ).to_i
     key.exponent.should == '65537'.to_i
+  end
+
+  it 'should generate application/magic-key correctly' do
+    modulus = (
+      '803128378907519656502289154656359136834494406215410' +
+      '050964539889229343337085989194330643990745488374753' +
+      '4493461257620351548796452092307094036643522661681091'
+    ).to_i
+    exponent = '65537'.to_i
+    key = Salmon::Key.new(modulus, exponent)
+    key.to_s.should == (
+      'RSA.AJlYGPETelEQU7LZ3b5lFD2-FGU3cL8JnXUihOc_47' +
+      'ylBCuspNbt66wvcjfJOhYpRo_StHnlD3toX-D4_uQph8M.AQAB'
+    )
   end
 end
