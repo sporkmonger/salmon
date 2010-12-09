@@ -22,6 +22,10 @@ shared_examples_for 'normal salmon envelopes' do
     @envelope.data.should == 'Tm90IHJlYWxseSBBdG9t'
   end
 
+  it 'should never have whitespace in the data' do
+    @envelope.data.should_not =~ /\s/
+  end
+
   it 'should parse the payload correctly' do
     @envelope.payload.should == 'Not really Atom'
   end
