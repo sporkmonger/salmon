@@ -23,8 +23,8 @@ module Salmon
     end
 
     def data=(new_data)
-      @data = new_data
-      @payload = Salmon.base64url_decode(new_data)
+      @data = new_data.gsub(/[\s=]/, '')
+      @payload = Salmon.base64url_decode(@data)
     end
 
     def payload
@@ -33,7 +33,7 @@ module Salmon
 
     def payload=(new_payload)
       @payload = new_payload
-      @data = Salmon.base64url_encode(new_payload)
+      @data = Salmon.base64url_encode(@payload)
     end
 
     def data_type

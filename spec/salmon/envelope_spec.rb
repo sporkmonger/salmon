@@ -15,23 +15,9 @@
 require 'spec_helper'
 
 require 'salmon/envelope'
+require 'salmon/signature'
 
-describe Salmon::Envelope, 'with a JSON serialization' do
-  before do
-    @envelope = Salmon::Envelope.parse_json(<<-JSON.strip)
-      {
-        "data": "Tm90IHJlYWxseSBBdG9t",
-        "data_type": "application/atom+xml",
-        "encoding": "base64url",
-        "alg": "RSA-SHA256",
-        "sigs": [{
-          "value": "EvGSD2vi8qYcveHnb-rrlok07qnCXjn8YSeCDDXlbhILSabgvNsPpbe76up8w63i2fWHvLKJzeGLKfyHg8ZomQ",
-          "keyhash": "4k8ikoyC2Xh+8BiIeQ+ob7Hcd2J7/Vj3uM61dy9iRMI="
-        }]
-      }
-    JSON
-  end
-
+shared_examples_for 'normal salmon envelopes' do
   it 'should parse the data correctly' do
     @envelope.data.should == 'Tm90IHJlYWxseSBBdG9t'
   end
@@ -62,4 +48,61 @@ describe Salmon::Envelope, 'with a JSON serialization' do
       'Tm90IHJlYWxseSBBdG9t.YXBwbGljYXRpb24vYXRvbSt4bWw.' +
       'YmFzZTY0dXJs.UlNBLVNIQTI1Ng'
   end
+end
+
+describe Salmon::Envelope, 'created piecewise' do
+  before do
+    @envelope = Salmon::Envelope.new
+    @envelope.data = 'Tm90IHJlYWxseSBBdG9t'
+    @envelope.data_type = 'application/atom+xml'
+    @envelope.encoding = 'base64url'
+    @envelope.algorithm = 'RSA-SHA256'
+    signature = Salmon::Signature.new
+    signature.value = (
+      'EvGSD2vi8qYcveHnb-rrlok07qnCXjn8YSeCDDXlbh' +
+      'ILSabgvNsPpbe76up8w63i2fWHvLKJzeGLKfyHg8ZomQ'
+    )
+    signature.keyhash = '4k8ikoyC2Xh+8BiIeQ+ob7Hcd2J7/Vj3uM61dy9iRMI='
+    @envelope.signatures << signature
+  end
+
+  it_should_behave_like 'normal salmon envelopes'
+end
+
+describe Salmon::Envelope, 'created in non-canonical form' do
+  before do
+    @envelope = Salmon::Envelope.new
+    @envelope.data = "\t\tTm9  \t0IHJl\n  YWxseSBBdG9t\n\n\n    "
+    @envelope.data_type = 'application/atom+xml'
+    @envelope.encoding = 'base64url'
+    @envelope.algorithm = 'RSA-SHA256'
+    signature = Salmon::Signature.new
+    signature.value = (
+      'EvGSD2vi8qYcveHnb-rrlok07qnCXjn8YSeCDDXlbh' +
+      'ILSabgvNsPpbe76up8w63i2fWHvLKJzeGLKfyHg8ZomQ'
+    )
+    signature.keyhash = '4k8ikoyC2Xh+8BiIeQ+ob7Hcd2J7/Vj3uM61dy9iRMI='
+    @envelope.signatures << signature
+  end
+
+  it_should_behave_like 'normal salmon envelopes'
+end
+
+describe Salmon::Envelope, 'with a JSON serialization' do
+  before do
+    @envelope = Salmon::Envelope.parse_json(<<-JSON.strip)
+      {
+        "data": "Tm90IHJlYWxseSBBdG9t",
+        "data_type": "application/atom+xml",
+        "encoding": "base64url",
+        "alg": "RSA-SHA256",
+        "sigs": [{
+          "value": "EvGSD2vi8qYcveHnb-rrlok07qnCXjn8YSeCDDXlbhILSabgvNsPpbe76up8w63i2fWHvLKJzeGLKfyHg8ZomQ",
+          "keyhash": "4k8ikoyC2Xh+8BiIeQ+ob7Hcd2J7/Vj3uM61dy9iRMI="
+        }]
+      }
+    JSON
+  end
+
+  it_should_behave_like 'normal salmon envelopes'
 end
