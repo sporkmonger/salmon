@@ -110,3 +110,23 @@ describe Salmon::Envelope, 'with a JSON serialization' do
 
   it_should_behave_like 'normal salmon envelopes'
 end
+
+describe Salmon::Envelope, 'with a pre-parsed JSON hash' do
+  before do
+    @envelope = Salmon::Envelope.parse_json({
+      'data' => 'Tm90IHJlYWxseSBBdG9t',
+      'data_type' => 'application/atom+xml',
+      'encoding' => 'base64url',
+      'alg' => 'RSA-SHA256',
+      'sigs' => [{
+        'value' => (
+          'EvGSD2vi8qYcveHnb-rrlok07qnCXjn8YSeCDDXlbh' +
+          'ILSabgvNsPpbe76up8w63i2fWHvLKJzeGLKfyHg8ZomQ'
+        ),
+        'keyhash' => '4k8ikoyC2Xh+8BiIeQ+ob7Hcd2J7/Vj3uM61dy9iRMI='
+      }]
+    })
+  end
+
+  it_should_behave_like 'normal salmon envelopes'
+end
