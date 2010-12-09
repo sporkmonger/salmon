@@ -14,6 +14,7 @@
 
 require 'salmon'
 require 'salmon/signature'
+require 'openssl'
 
 module Salmon
   class Envelope
