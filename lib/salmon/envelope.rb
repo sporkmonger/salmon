@@ -78,6 +78,14 @@ module Salmon
       # TODO
     end
 
+    def verified?(key, signature)
+      key.to_openssl.verify(
+        OpenSSL::Digest::SHA256.new,
+        signature,
+        self.message_string
+      )
+    end
+
     def parse_json(data)
       require 'json'
       if data.respond_to?(:to_str)
