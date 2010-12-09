@@ -39,7 +39,7 @@ module Salmon
     hex_string = integer.to_s(16)
     return self.base64url_encode([
       hex_string.rjust(2 + 2 * (hex_string.size / 2), '0')
-    ].pack('H*'))
+    ].pack('H*').gsub(/^\000*/, ''))
   end
 
   def self.rsassa_pkcs1_v1_5_sign(key, message)

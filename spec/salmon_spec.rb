@@ -38,6 +38,17 @@ describe Salmon do
   it 'should convert encoded data to integer correctly' do
     Salmon.base64url_to_i('AQAB').should == 65537
     Salmon.base64url_to_i((
+      'mVgY8RN6URBTstndvmUUPb4UZTdwvwmddSKE5z_jvKU' +
+      'EK6yk1u3rrC9yN8k6FilGj9K0eeUPe2hf4Pj-5CmHww'
+    )).should == (
+      '803128378907519656502289154656359136834494406215410' +
+      '050964539889229343337085989194330643990745488374753' +
+      '4493461257620351548796452092307094036643522661681091'
+    ).to_i
+  end
+
+  it 'should convert encoded data with zeroes to integer correctly' do
+    Salmon.base64url_to_i((
       'AJlYGPETelEQU7LZ3b5lFD2-FGU3cL8JnXUihOc_47' +
       'ylBCuspNbt66wvcjfJOhYpRo_StHnlD3toX-D4_uQph8M'
     )).should == (
@@ -54,8 +65,8 @@ describe Salmon do
       '050964539889229343337085989194330643990745488374753' +
       '4493461257620351548796452092307094036643522661681091'
     ).to_i).should == (
-      'AJlYGPETelEQU7LZ3b5lFD2-FGU3cL8JnXUihOc_47' +
-      'ylBCuspNbt66wvcjfJOhYpRo_StHnlD3toX-D4_uQph8M'
+      'mVgY8RN6URBTstndvmUUPb4UZTdwvwmddSKE5z_jvKU' +
+      'EK6yk1u3rrC9yN8k6FilGj9K0eeUPe2hf4Pj-5CmHww'
     )
   end
 
@@ -64,8 +75,8 @@ describe Salmon do
       Salmon.base64url_to_i('AQAB')
     ).should == 'AQAB'
     encoded_data = (
-      'AJlYGPETelEQU7LZ3b5lFD2-FGU3cL8JnXUihOc_47' +
-      'ylBCuspNbt66wvcjfJOhYpRo_StHnlD3toX-D4_uQph8M'
+      'mVgY8RN6URBTstndvmUUPb4UZTdwvwmddSKE5z_jvKU' +
+      'EK6yk1u3rrC9yN8k6FilGj9K0eeUPe2hf4Pj-5CmHww'
     )
     Salmon.i_to_base64url(
       Salmon.base64url_to_i(encoded_data)

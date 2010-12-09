@@ -2,7 +2,7 @@ require 'salmon'
 require 'openssl'
 
 module Salmon
-  class Key
+  class PublicKey
     MAGIC_KEY_PATTERN = /^RSA\.([a-zA-Z0-9_-]+)\.([a-zA-Z0-9_-]+)$/
 
     def initialize(modulus, exponent)
@@ -12,6 +12,11 @@ module Salmon
 
     attr_reader :modulus
     attr_reader :exponent
+
+    def ==(other)
+      return false unless other.kind_of?(Salmon::PublicKey)
+      return self.modulus == other.modulus && self.exponent == other.exponent
+    end
 
     def to_s
       return (
@@ -38,9 +43,16 @@ module Salmon
       return @openssl_key
     end
 
+    def to_key_id
+      @keyhash ||= Salmon.base64url_encode(
+        OpenSSL::Digest::SHA256.new(self.to_s).digest
+      )
+      return @keyhash
+    end
+
     def self.parse_magic_key(data)
       modulus, exponent = data.match(MAGIC_KEY_PATTERN)[1..2]
-      return Salmon::Key.new(
+      return Salmon::PublicKey.new(
         Salmon.base64url_to_i(modulus),
         Salmon.base64url_to_i(exponent)
       )
@@ -48,7 +60,7 @@ module Salmon
 
     def self.parse_pem(data)
       openssl_key = OpenSSL::PKey::RSA.new(data)
-      return Salmon::Key.new(openssl_key.n, openssl_key.e)
+      return Salmon::PublicKey.new(openssl_key.n, openssl_key.e)
     end
     class <<self
       alias_method :parse_der, :parse_pem
