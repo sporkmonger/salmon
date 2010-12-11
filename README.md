@@ -11,17 +11,9 @@
 
 An implementation of the Salmon Protocol for Ruby.
 
-# Features
-
-* A feature list goes here.
-
 # Example Usage
 
     # Some code goes here.
-
-# Requirements
-
-* Salmon has no dependencies.
 
 # Install
 
